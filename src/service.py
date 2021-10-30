@@ -4,13 +4,14 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import os.path
 
+from Audio import Audio
+
 ROOT_URL = "https://www.voiptroubleshooter.com/open_speech/"
 MAIN_PAGE = "index.html"
 
 DATA_FOLDER = "./data/"
 AUDIO_FOLDER = DATA_FOLDER + "audios/"
 META_FILE = DATA_FOLDER + "metadata.csv"
-META_COLS = ["Name", "Gender", "Format", "Sample Rate", "Dialect"]
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 page = requests.get(ROOT_URL + MAIN_PAGE, headers=headers)
@@ -22,7 +23,7 @@ languages = soup.find(id="LayerMain").find_all("ul")[1].find_all("li")
 if os.path.isfile(META_FILE):
     metadata_df = pd.read_csv(META_FILE)
 else:
-    metadata_df = pd.DataFrame(columns=META_COLS)
+    metadata_df = pd.DataFrame(columns=Audio.Headers)
 
 
 for language in languages:
@@ -46,30 +47,19 @@ for language in languages:
 
         # skip empty lines
         if (items[0].find("a") is not None):
-            audio_link = items[0].find("a")["href"]
-            audio_name = items[0].find("a").text
-            audio_gender = items[1].find("div").text
-            audio_format = items[2].find("div").text
-            audio_rate = items[3].find("div").text
-            audio_dialect = items[4].text
+            audio_item = Audio.parse(items)
 
             # only update this record in meta if it does not exist
-            if len(metadata_df.query("Name == @audio_name")) == 0:
-                new_row = {
-                    META_COLS[0]: audio_name,
-                    META_COLS[1]: audio_gender,
-                    META_COLS[2]: audio_format,
-                    META_COLS[3]: audio_rate,
-                    META_COLS[4]: audio_dialect
-                }
+            if len(metadata_df.query("Name == @audio_item.name")) == 0:
+                new_row = audio_item.create_row()
 
                 metadata_df = metadata_df.append(new_row, ignore_index=True)
-                print(audio_link, audio_name, audio_gender, audio_format, audio_rate, audio_dialect)
+                audio_item.print()
 
             # only write if this audio does not exist
-            audio_file = AUDIO_FOLDER + audio_name
+            audio_file = AUDIO_FOLDER + audio_item.name
             if not os.path.isfile(audio_file):
-                r = requests.get(ROOT_URL + audio_link, allow_redirects=True, headers=headers)
+                r = requests.get(ROOT_URL + audio_item.link, allow_redirects=True, headers=headers)
 
                 with open(audio_file, 'wb') as f:
                     f.write(r.content)
