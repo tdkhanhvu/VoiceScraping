@@ -90,13 +90,11 @@ class AudioSoundDetector(Audio):
         }
 
     def process(self):
-        # print("Audio path:", self.audio_path)
         try:
             wav = AudioSoundDetector.read_audio(self.audio_path)
             speech_timestamps = AudioSoundDetector.get_speech_ts(wav, AudioSoundDetector.model,
                                             num_steps=4)
 
-            # print(speech_timestamps)
             self.has_speech = len(speech_timestamps) > 0
             print("Detected Audio:", self.audio_path)
         except RuntimeError:

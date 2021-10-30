@@ -45,12 +45,8 @@ class ServiceSoundDetector(Service):
         self.AudioClass = AudioSoundDetector
 
     def process(self):
-        print("Process")
         filenames = MetaDataManagerScraper(UtilsScraper.DATA_FOLDER).get_all_files()
         self.meta_manager = MetaDataManagerSoundDetector(UtilsScraper.DATA_FOLDER)
-
-        print("Files:")
-        print(filenames)
 
         for filename in filenames:
             items = {'name': filename}

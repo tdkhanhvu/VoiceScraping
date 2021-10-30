@@ -1,8 +1,8 @@
 from service import ServiceScraper, ServiceSoundDetector
 
 if __name__ == "__main__":
-    scraper = ServiceScraper()
-    scraper.process()
+    services = [ServiceScraper, ServiceSoundDetector]
 
-    sound_detector = ServiceSoundDetector()
-    sound_detector.process()
+    for service in services:
+        s = service()
+        s.process()

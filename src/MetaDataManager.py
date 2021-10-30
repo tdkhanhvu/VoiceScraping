@@ -17,14 +17,11 @@ class MetaDataManager():
 
     def update(self, item):
         # only update this record in meta if it does not exist
-
-        print(item.name)
         if len(self.metadata.query("Name == @item.name")) == 0:
             new_row = item.create_row()
             print("Update:", new_row)
 
             self.metadata = self.metadata.append(new_row, ignore_index=True)
-            # item.print()
 
     def get_all_files(self):
         return self.metadata["Name"].tolist()
