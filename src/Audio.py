@@ -5,29 +5,35 @@ import requests
 import torch
 torch.set_num_threads(1)
 
-from metadatamanager import MetaDataManagerScraper, MetaDataManagerSoundDetector, MetaDataManagerLanguageDetector
 from utils import UtilsScraper
 
 class Audio():
-    def __init__(self, items, meta_class):
+    """Base class to handle Audio objects"""
+    def __init__(self, items:object, meta_class:'MetaDataManager') -> None:
         self.audio_path= UtilsScraper.AUDIO_FOLDER + self.name
         self.items = items
         self.MetaClass = meta_class
 
-    def create_row(self):
+    def create_row(self) -> dict:
+        """Create a new row to insert into metadata table"""
         return {}
 
-    def process(self):
+    def process(self) -> None:
+        """Process this audio item"""
         pass
 
-    def print(self):
+    def print(self) -> None:
+        """Print this audio item"""
         pass
 
-    def is_valid(items):
+    def is_valid(items) -> bool:
+        """Check if the items object is valid"""
         return True
 
 class AudioScraper(Audio):
-    def __init__(self, items, meta_class):
+    """Class to handle Audio object for Scraper"""
+
+    def __init__(self, items:object, meta_class:'MetaDataManager') -> None:
         self.link=items[0].find("a")["href"]
         self.name=items[0].find("a").text
         self.gender=items[1].find("div").text
@@ -38,7 +44,8 @@ class AudioScraper(Audio):
         super().__init__(items, meta_class)
 
 
-    def create_row(self):
+    def create_row(self) -> dict:
+        """Create a new row to insert into metadata table"""
         return {
             self.MetaClass.Headers[0]: self.name,
             self.MetaClass.Headers[1]: self.gender,
@@ -47,37 +54,43 @@ class AudioScraper(Audio):
             self.MetaClass.Headers[4]: self.dialect
         }
 
-    def process(self):
+    def process(self) -> None:
+        """Process this audio item"""
         if not os.path.isfile(self.audio_path):
             r = requests.get(UtilsScraper.ROOT_URL + self.link, allow_redirects=True, headers=UtilsScraper.HEADERS)
 
             with open(self.audio_path, 'wb') as f:
                 f.write(r.content)
 
-    def print(self):
+    def print(self) -> None:
+        """Print this audio item"""
         print(self.link, self.name, self.gender, self.format, self.rate, self.dialect)
 
-    def is_valid(items):
+    def is_valid(items) -> bool:
+        """Check if the items object is valid"""
         return items[0].find("a") is not None
 
 class AudioSoundDetector(Audio):
+    """Class to handle Audio object for Sound Detector"""
     read_audio = None
     get_speech_ts = None
     model = None
 
-    def __init__(self, items, meta_class):
+    def __init__(self, items:object, meta_class:'MetaDataManager') -> None:
         self.name = items['name']
         self.has_speech = False
 
         super().__init__(items, meta_class)
 
-    def create_row(self):
+    def create_row(self) -> dict:
+        """Create a new row to insert into metadata table"""
         return {
             self.MetaClass.Headers[0]: self.name,
             self.MetaClass.Headers[1]: self.has_speech
         }
 
-    def process(self):
+    def process(self) -> None:
+        """Process this audio item"""
         # lazy loading
         if self.__class__.read_audio is None:
             model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
@@ -103,28 +116,33 @@ class AudioSoundDetector(Audio):
             print("Error detecting audio:", self.audio_path)
 
     
-    def print(self):
+    def print(self) -> None:
+        """Print this audio item"""
         print(self.name, self.has_speech)
 
 
 class AudioLanguageDetector(Audio):
+    """Class to handle Audio object for Language Detector"""
     read_audio = None
     get_language = None
     model = None
 
-    def __init__(self, items, meta_class):
+    def __init__(self, items:object, meta_class:'MetaDataManager') -> None:
         self.name = items['name']
         self.language = ""
 
         super().__init__(items, meta_class)
 
-    def create_row(self):
+    def create_row(self) -> dict:
+        """Create a new row to insert into metadata table"""
         return {
             self.MetaClass.Headers[0]: self.name,
             self.MetaClass.Headers[1]: self.language
         }
 
-    def process(self):
+
+    def process(self) -> None:
+        """Process this audio item"""
         # lazy loading
         if self.__class__.read_audio is None:
             model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
@@ -147,5 +165,6 @@ class AudioLanguageDetector(Audio):
             print("Error detecting language:", self.audio_path)
 
     
-    def print(self):
+    def print(self) -> None:
+        """Print this audio item"""
         print(self.name, self.language)

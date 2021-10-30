@@ -8,16 +8,20 @@ from utils import UtilsScraper
 
 
 class Service():
+    """Base class to handle the service"""
     name = "Service"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.MetaClass = MetaDataManager
         print("Started:", self.__class__.name)
 
-    def process(self):
+    def process(self) -> None:
+        """Process all items"""
         self.meta_manager.save()
+        print("Finished:", self.__class__.name)
 
-    def process_audio(self, items):
+    def process_audio(self, items:object) -> None:
+        """Process each items object"""
         if self.AudioClass.is_valid(items):
             audio_item = self.AudioClass(items, self.MetaClass)
 
@@ -26,16 +30,18 @@ class Service():
                 self.meta_manager.update(audio_item)
 
 class ServiceScraper(Service):
+    """This class handles the Scraper Service"""
     name = "ServiceScraper"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.MetaClass = MetaDataManagerScraper
         self.AudioClass = AudioScraper
 
 
-    def process(self):
-        self.meta_manager = MetaDataManagerScraper(UtilsScraper.DATA_FOLDER)
+    def process(self) -> None:
+        """Process all items"""
+        self.meta_manager = self.MetaClass(UtilsScraper.DATA_FOLDER)
 
         page = requests.get(UtilsScraper.ROOT_URL + UtilsScraper.MAIN_PAGE, headers=UtilsScraper.HEADERS)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -53,10 +59,11 @@ class ServiceScraper(Service):
 class ServiceMLDetector(Service):
     name = "ServiceMLDetector"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def process(self):
+    def process(self) -> None:
+        """Process all items"""
         filenames = MetaDataManagerScraper(UtilsScraper.DATA_FOLDER).get_all_files()
         self.meta_manager = self.MetaClass(UtilsScraper.DATA_FOLDER)
 
@@ -69,7 +76,7 @@ class ServiceMLDetector(Service):
 class ServiceSoundDetector(ServiceMLDetector):
     name = "ServiceSoundDetector"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.MetaClass = MetaDataManagerSoundDetector
         self.AudioClass = AudioSoundDetector
@@ -78,7 +85,7 @@ class ServiceSoundDetector(ServiceMLDetector):
 class ServiceLanguageDetector(ServiceMLDetector):
     name = "ServiceLanguageDetector"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.MetaClass = MetaDataManagerLanguageDetector
         self.AudioClass = AudioLanguageDetector

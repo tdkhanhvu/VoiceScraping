@@ -1,12 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
-import bs4.element.ResultSet
+from bs4.element import ResultSet
 
 class Language():
-    def __init__(self, language:bs4.element.ResultSet):
+    """A class to handle the BeautifulSoup object scraped from a language"""
+    def __init__(self, language:ResultSet) -> None:
         self.language = language
 
-    def get_audios(self, root_url:str, headers:str) -> bs4.element.ResultSet:
+    def get_audios(self, root_url:str, headers:str) -> ResultSet:
         """Get all audios from this language"""
         a_object = self.language.find("a")
 
