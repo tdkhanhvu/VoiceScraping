@@ -20,7 +20,7 @@ class MetaDataManager():
         if not self.exist(item):
             new_row = item.create_row()
             print("Update:", new_row)
-
+ 
             self.metadata = self.metadata.append(new_row, ignore_index=True)
 
     def exist(self, item):

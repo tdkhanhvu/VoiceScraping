@@ -2,29 +2,37 @@ import requests
 from bs4 import BeautifulSoup
 
 from audio import AudioScraper, AudioSoundDetector, AudioLanguageDetector
-from metadatamanager import MetaDataManagerScraper, MetaDataManagerSoundDetector, MetaDataManagerLanguageDetector
+from metadatamanager import MetaDataManager, MetaDataManagerScraper, MetaDataManagerSoundDetector, MetaDataManagerLanguageDetector
 from language import Language
 from utils import UtilsScraper 
 
 
 class Service():
+    name = "Service"
+
     def __init__(self):
-        pass
+        self.MetaClass = MetaDataManager
+        print("Started:", self.__class__.name)
 
     def process(self):
         self.meta_manager.save()
 
     def process_audio(self, items):
         if self.AudioClass.is_valid(items):
-            audio_item = self.AudioClass(items)
+            audio_item = self.AudioClass(items, self.MetaClass)
 
             if not self.meta_manager.exist(audio_item):
                 audio_item.process()
                 self.meta_manager.update(audio_item)
 
 class ServiceScraper(Service):
+    name = "ServiceScraper"
+
     def __init__(self):
+        super().__init__()
+        self.MetaClass = MetaDataManagerScraper
         self.AudioClass = AudioScraper
+
 
     def process(self):
         self.meta_manager = MetaDataManagerScraper(UtilsScraper.DATA_FOLDER)
@@ -43,8 +51,10 @@ class ServiceScraper(Service):
         super().process()
 
 class ServiceMLDetector(Service):
+    name = "ServiceMLDetector"
+
     def __init__(self):
-        pass
+        super().__init__()
 
     def process(self):
         filenames = MetaDataManagerScraper(UtilsScraper.DATA_FOLDER).get_all_files()
@@ -57,13 +67,18 @@ class ServiceMLDetector(Service):
         super().process()
 
 class ServiceSoundDetector(ServiceMLDetector):
+    name = "ServiceSoundDetector"
+
     def __init__(self):
+        super().__init__()
         self.MetaClass = MetaDataManagerSoundDetector
         self.AudioClass = AudioSoundDetector
-        super().__init__()
+
 
 class ServiceLanguageDetector(ServiceMLDetector):
+    name = "ServiceLanguageDetector"
+
     def __init__(self):
+        super().__init__()
         self.MetaClass = MetaDataManagerLanguageDetector
         self.AudioClass = AudioLanguageDetector
-        super().__init__()
