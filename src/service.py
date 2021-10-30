@@ -6,6 +6,7 @@ import os.path
 
 from Audio import Audio
 from MetaDataManager import MetaDataManager
+from Language import Language
 
 class Service():
     ROOT_URL = "https://www.voiptroubleshooter.com/open_speech/"
@@ -23,28 +24,13 @@ class Service():
         languages = soup.find(id="LayerMain").find_all("ul")[1].find_all("li")
 
         for language in languages:
-            self.process_language(language)
+            language_item = Language(language)
+            audios = language_item.get_audios(Service.ROOT_URL, Service.HEADERS)
+
+            for audio in audios:
+                self.process_audio(audio)
 
         self.meta_manager.save()
-
-    def process_language(self, language):
-        a_object = language.find("a")
-
-        language_name = a_object.text
-        language_link = a_object["href"]
-
-        language_page = requests.get(Service.ROOT_URL + language_link, headers=Service.HEADERS)
-        language_soup = BeautifulSoup(language_page.content, "html.parser")
-        
-        audios = language_soup.find("table").find("table").find_all("tr")
-
-        # remove header
-        audios.pop(0)
-
-        print(language_name)
-
-        for audio in audios:
-            self.process_audio(audio)
 
     def process_audio(self, audio):
         items = audio.find_all("td")
