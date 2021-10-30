@@ -5,6 +5,7 @@ import pandas as pd
 import os.path
 
 from Audio import Audio
+from MetaDataManager import MetaDataManager
 
 class Service():
     ROOT_URL = "https://www.voiptroubleshooter.com/open_speech/"
@@ -12,21 +13,10 @@ class Service():
 
     DATA_FOLDER = "./data/"
     AUDIO_FOLDER = DATA_FOLDER + "audios/"
-    META_FILE = DATA_FOLDER + "metadata.csv"
-
     HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-    def load_meta_file(self):
-        if os.path.isfile(Service.META_FILE):
-            return pd.read_csv(Service.META_FILE)
-
-        return pd.DataFrame(columns=Audio.Headers)
-
-    def save_meta_file(self, metadata_df):
-        metadata_df.to_csv(Service.META_FILE, index=False)
-
     def load_data(self):
-        self.metadata_df = self.load_meta_file()
+        self.meta_manager = MetaDataManager(Service.DATA_FOLDER)
 
         page = requests.get(Service.ROOT_URL + Service.MAIN_PAGE, headers=Service.HEADERS)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -35,7 +25,7 @@ class Service():
         for language in languages:
             self.process_language(language)
 
-        self.save_meta_file(self.metadata_df)
+        self.meta_manager.save()
 
     def process_language(self, language):
         a_object = language.find("a")
@@ -62,16 +52,8 @@ class Service():
         # skip empty lines
         if (items[0].find("a") is not None):
             audio_item = Audio.parse(items)
-            self.update_metafile(audio_item)
+            self.meta_manager.update(audio_item)
             self.download_audio(audio_item)
-
-    def update_metafile(self, audio_item):
-        # only update this record in meta if it does not exist
-        if len(self.metadata_df.query("Name == @audio_item.name")) == 0:
-            new_row = audio_item.create_row()
-
-            self.metadata_df = self.metadata_df.append(new_row, ignore_index=True)
-            audio_item.print()
 
     def download_audio(self, audio_item):
         # only write if this audio does not exist

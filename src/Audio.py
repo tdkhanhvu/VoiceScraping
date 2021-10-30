@@ -1,6 +1,6 @@
-class Audio():
-    Headers = ["Name", "Gender", "Format", "Sample Rate", "Dialect"]
+from MetaDataManager import MetaDataManager
 
+class Audio():
     def __init__(self, link, name, gender, format, rate, dialect):
         self.link = link
         self.name = name
@@ -11,11 +11,11 @@ class Audio():
 
     def create_row(self):
         return {
-            Audio.Headers[0]: self.name,
-            Audio.Headers[1]: self.gender,
-            Audio.Headers[2]: self.format,
-            Audio.Headers[3]: self.rate,
-            Audio.Headers[4]: self.dialect
+            MetaDataManager.Headers[0]: self.name,
+            MetaDataManager.Headers[1]: self.gender,
+            MetaDataManager.Headers[2]: self.format,
+            MetaDataManager.Headers[3]: self.rate,
+            MetaDataManager.Headers[4]: self.dialect
         }
 
     def parse(items):
