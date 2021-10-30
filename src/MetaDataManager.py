@@ -33,7 +33,7 @@ class MetaDataManagerScraper(MetaDataManager):
         super().__init__(data_folder, filename)
 
 class MetaDataManagerSoundDetector(MetaDataManager):
-    Headers = ["Name", "Has Speech"]
+    Headers = ["Name", "has_speech"]
 
     def __init__(self, data_folder, filename="metadata_sound_detector.csv"):
         super().__init__(data_folder, filename)
