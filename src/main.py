@@ -1,7 +1,7 @@
-from service import ServiceScraper, ServiceSoundDetector
+from service import ServiceScraper, ServiceSoundDetector, ServiceLanguageDetector
 
 if __name__ == "__main__":
-    services = [ServiceScraper, ServiceSoundDetector]
+    services = [ServiceScraper, ServiceSoundDetector, ServiceLanguageDetector]
 
     for service in services:
         s = service()

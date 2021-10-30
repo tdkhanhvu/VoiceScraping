@@ -5,7 +5,7 @@ import requests
 import torch
 torch.set_num_threads(1)
 
-from metadatamanager import MetaDataManagerScraper, MetaDataManagerSoundDetector
+from metadatamanager import MetaDataManagerScraper, MetaDataManagerSoundDetector, MetaDataManagerLanguageDetector
 from utils import UtilsScraper
 
 class Audio():
@@ -70,6 +70,14 @@ class AudioSoundDetector(Audio):
 
         super().__init__(items)
 
+    def create_row(self):
+        return {
+            MetaDataManagerSoundDetector.Headers[0]: self.name,
+            MetaDataManagerSoundDetector.Headers[1]: self.has_speech
+        }
+
+    def process(self):
+        # lazy loading
         if AudioSoundDetector.read_audio is None:
             model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
                                         model='silero_vad',
@@ -83,13 +91,6 @@ class AudioSoundDetector(Audio):
             AudioSoundDetector.get_speech_ts = get_speech_ts
             AudioSoundDetector.model = model
 
-    def create_row(self):
-        return {
-            MetaDataManagerSoundDetector.Headers[0]: self.name,
-            MetaDataManagerSoundDetector.Headers[1]: self.has_speech
-        }
-
-    def process(self):
         try:
             wav = AudioSoundDetector.read_audio(self.audio_path)
             speech_timestamps = AudioSoundDetector.get_speech_ts(wav, AudioSoundDetector.model,
@@ -103,3 +104,48 @@ class AudioSoundDetector(Audio):
     
     def print(self):
         print(self.name, self.has_speech)
+
+
+class AudioLanguageDetector(Audio):
+    read_audio = None
+    get_language = None
+    model = None
+
+    def __init__(self, items):
+        self.name = items['name']
+        self.language = ""
+
+        super().__init__(items)
+
+
+    def create_row(self):
+        return {
+            MetaDataManagerLanguageDetector.Headers[0]: self.name,
+            MetaDataManagerLanguageDetector.Headers[1]: self.language
+        }
+
+    def process(self):
+        # lazy loading
+        if AudioLanguageDetector.read_audio is None:
+            model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
+                                        model='silero_lang_detector',
+                                        force_reload=True)
+
+            get_language, read_audio = utils
+
+            AudioLanguageDetector.read_audio = read_audio
+            AudioLanguageDetector.get_language = get_language
+            AudioLanguageDetector.model = model
+
+        try:
+            wav = AudioLanguageDetector.read_audio(self.audio_path)
+            language = AudioLanguageDetector.get_language(wav, AudioLanguageDetector.model)
+
+            self.language = language
+            print(f"Detected Language:{self.language} for audio {self.audio_path}")
+        except RuntimeError:
+            print("Error detecting language:", self.audio_path)
+
+    
+    def print(self):
+        print(self.name, self.language)

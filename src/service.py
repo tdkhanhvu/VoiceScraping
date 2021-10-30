@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
-from audio import AudioScraper, AudioSoundDetector
-from metadatamanager import MetaDataManagerScraper, MetaDataManagerSoundDetector
+from audio import AudioScraper, AudioSoundDetector, AudioLanguageDetector
+from metadatamanager import MetaDataManagerScraper, MetaDataManagerSoundDetector, MetaDataManagerLanguageDetector
 from language import Language
 from utils import UtilsScraper 
 
@@ -17,8 +17,10 @@ class Service():
     def process_audio(self, items):
         if self.AudioClass.is_valid(items):
             audio_item = self.AudioClass(items)
-            audio_item.process()
-            self.meta_manager.update(audio_item)
+
+            if not self.meta_manager.exist(audio_item):
+                audio_item.process()
+                self.meta_manager.update(audio_item)
 
 class ServiceScraper(Service):
     def __init__(self):
@@ -40,16 +42,28 @@ class ServiceScraper(Service):
 
         super().process()
 
-class ServiceSoundDetector(Service):
+class ServiceMLDetector(Service):
     def __init__(self):
-        self.AudioClass = AudioSoundDetector
+        pass
 
     def process(self):
         filenames = MetaDataManagerScraper(UtilsScraper.DATA_FOLDER).get_all_files()
-        self.meta_manager = MetaDataManagerSoundDetector(UtilsScraper.DATA_FOLDER)
+        self.meta_manager = self.MetaClass(UtilsScraper.DATA_FOLDER)
 
         for filename in filenames:
             items = {'name': filename}
             self.process_audio(items)
 
         super().process()
+
+class ServiceSoundDetector(ServiceMLDetector):
+    def __init__(self):
+        self.MetaClass = MetaDataManagerSoundDetector
+        self.AudioClass = AudioSoundDetector
+        super().__init__()
+
+class ServiceLanguageDetector(ServiceMLDetector):
+    def __init__(self):
+        self.MetaClass = MetaDataManagerLanguageDetector
+        self.AudioClass = AudioLanguageDetector
+        super().__init__()
