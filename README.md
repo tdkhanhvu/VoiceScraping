@@ -1,13 +1,13 @@
 # VoiceScraping
 
 ## Project Overview
-`VoiceScraping` is a Python project allowing users to download audio files from this [website](https://www.voiptroubleshooter.com/open_speech/index.html). It will store the metadata for each audio file downloaded. In addition, it will run Machine Learning functions to detect if there is any speech and which language is spoken in each audio file, and also record the metata data in the disk.
+`VoiceScraping` is a Python project allowing users to download audio files from this [website](https://www.voiptroubleshooter.com/open_speech/index.html). It will store the metadata for each audio file downloaded. In addition, it will run Machine Learning models to detect if there is any speech and which language is spoken in each audio file, and also record the metata data in the disk.
 
-## Architecture:
+## Class diagram:
 
 ![image](classes.png)
 
-This architecture is created by using the below commands from the project folder:
+This class diagram is created by using the below commands from the project folder:
 
 ```bash
 # create a dot file
@@ -19,7 +19,7 @@ dot -Tpng classes.dot > classes.png
 
 ## Dependencies:
 
-- For the dependencies, please run the below command to install dependencies from [env.yml](ComputerVisionServer.yml):
+- For the dependencies, please run the below command to install dependencies from [env.yml](env.yml):
 ```bash
 $ conda env create -f env.yml
 ```
@@ -35,7 +35,7 @@ $ python ./src/main.py
 
 ## Download Docker image
 
-Please go to this [Docker website](https://hub.docker.com/r/tdkhanhvu/voice-recognition) to pull a Docker image of this project.
+Please go to this [Docker website](https://hub.docker.com/r/tdkhanhvu/voice-scraping) to pull a Docker image of this project.
 
 
 ## Build Docker image
@@ -81,6 +81,6 @@ We only persist the latest meta data to the disk once at the end of the operatio
 
 ## Contributors
 
-We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/tdkhanhvu/VoiceScrapingI/graphs/contributors).
+We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/tdkhanhvu/VoiceScraping/graphs/contributors).
 
 - Tran Doan Khanh Vu
