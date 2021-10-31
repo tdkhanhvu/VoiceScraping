@@ -1,0 +1,19 @@
+digraph "packages" {
+rankdir=BT
+charset="utf-8"
+"src" [color="black", label="src", shape="box", style="solid"];
+"src.audio" [color="black", label="src.audio", shape="box", style="solid"];
+"src.language" [color="black", label="src.language", shape="box", style="solid"];
+"src.main" [color="black", label="src.main", shape="box", style="solid"];
+"src.metadatamanager" [color="black", label="src.metadatamanager", shape="box", style="solid"];
+"src.service" [color="black", label="src.service", shape="box", style="solid"];
+"src.test" [color="black", label="src.test", shape="box", style="solid"];
+"src.utils" [color="black", label="src.utils", shape="box", style="solid"];
+"src.audio" -> "src.utils" [arrowhead="open", arrowtail="none"];
+"src.main" -> "src.service" [arrowhead="open", arrowtail="none"];
+"src.metadatamanager" -> "src.audio" [arrowhead="open", arrowtail="none"];
+"src.service" -> "src.audio" [arrowhead="open", arrowtail="none"];
+"src.service" -> "src.language" [arrowhead="open", arrowtail="none"];
+"src.service" -> "src.metadatamanager" [arrowhead="open", arrowtail="none"];
+"src.service" -> "src.utils" [arrowhead="open", arrowtail="none"];
+}

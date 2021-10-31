@@ -1,0 +1,31 @@
+digraph "classes" {
+rankdir=BT
+charset="utf-8"
+"src.audio.Audio" [color="black", fontcolor="black", label="{Audio|MetaClass : str\laudio_path\litems : object\l|create_row(): dict\lis_valid(items): bool\lprint(): \lprocess(): \l}", shape="record", style="solid"];
+"src.audio.AudioLanguageDetector" [color="black", fontcolor="black", label="{AudioLanguageDetector|get_language : NoneType\llanguage : str\lmodel : NoneType\lname\lread_audio : NoneType\l|create_row(): dict\lprint(): \lprocess(): \l}", shape="record", style="solid"];
+"src.audio.AudioScraper" [color="black", fontcolor="black", label="{AudioScraper|dialect\lformat\lgender\llink\lname\lrate\l|create_row(): dict\lis_valid(items): bool\lprint(): \lprocess(): \l}", shape="record", style="solid"];
+"src.audio.AudioSoundDetector" [color="black", fontcolor="black", label="{AudioSoundDetector|get_speech_ts : NoneType\lhas_speech : bool\lmodel : NoneType\lname\lread_audio : NoneType\l|create_row(): dict\lprint(): \lprocess(): \l}", shape="record", style="solid"];
+"src.language.Language" [color="black", fontcolor="black", label="{Language|language : ResultSet\l|get_audios(root_url: str, headers: str): ResultSet\l}", shape="record", style="solid"];
+"src.metadatamanager.MetaDataManager" [color="black", fontcolor="black", label="{MetaDataManager|meta_path\lmetadata : TextFileReader, DataFrame\l|exist(item: Audio): bool\lget_all_files(): List[str]\lload(): \lsave(): \lupdate(item: Audio): \l}", shape="record", style="solid"];
+"src.metadatamanager.MetaDataManagerLanguageDetector" [color="black", fontcolor="black", label="{MetaDataManagerLanguageDetector|Headers : list\l|}", shape="record", style="solid"];
+"src.metadatamanager.MetaDataManagerScraper" [color="black", fontcolor="black", label="{MetaDataManagerScraper|Headers : list\l|}", shape="record", style="solid"];
+"src.metadatamanager.MetaDataManagerSoundDetector" [color="black", fontcolor="black", label="{MetaDataManagerSoundDetector|Headers : list\l|}", shape="record", style="solid"];
+"src.service.Service" [color="black", fontcolor="black", label="{Service|MetaClass\lname : str\l|process(): \lprocess_audio(items: object): \l}", shape="record", style="solid"];
+"src.service.ServiceLanguageDetector" [color="black", fontcolor="black", label="{ServiceLanguageDetector|AudioClass\lMetaClass\lname : str\l|}", shape="record", style="solid"];
+"src.service.ServiceMLDetector" [color="black", fontcolor="black", label="{ServiceMLDetector|meta_manager\lname : str\l|process(): \l}", shape="record", style="solid"];
+"src.service.ServiceScraper" [color="black", fontcolor="black", label="{ServiceScraper|AudioClass\lMetaClass\lmeta_manager\lname : str\l|process(): \l}", shape="record", style="solid"];
+"src.service.ServiceSoundDetector" [color="black", fontcolor="black", label="{ServiceSoundDetector|AudioClass\lMetaClass\lname : str\l|}", shape="record", style="solid"];
+"src.utils.Utils" [color="black", fontcolor="black", label="{Utils|AUDIO_FOLDER : str\lDATA_FOLDER : str\lHEADERS : dict\lMAIN_PAGE : str\lROOT_URL : str\l|}", shape="record", style="solid"];
+"src.utils.UtilsScraper" [color="black", fontcolor="black", label="{UtilsScraper|AUDIO_FOLDER : str\lDATA_FOLDER : str\lMAIN_PAGE : str\lROOT_URL : str\l|}", shape="record", style="solid"];
+"src.audio.AudioLanguageDetector" -> "src.audio.Audio" [arrowhead="empty", arrowtail="none"];
+"src.audio.AudioScraper" -> "src.audio.Audio" [arrowhead="empty", arrowtail="none"];
+"src.audio.AudioSoundDetector" -> "src.audio.Audio" [arrowhead="empty", arrowtail="none"];
+"src.metadatamanager.MetaDataManagerLanguageDetector" -> "src.metadatamanager.MetaDataManager" [arrowhead="empty", arrowtail="none"];
+"src.metadatamanager.MetaDataManagerScraper" -> "src.metadatamanager.MetaDataManager" [arrowhead="empty", arrowtail="none"];
+"src.metadatamanager.MetaDataManagerSoundDetector" -> "src.metadatamanager.MetaDataManager" [arrowhead="empty", arrowtail="none"];
+"src.service.ServiceLanguageDetector" -> "src.service.ServiceMLDetector" [arrowhead="empty", arrowtail="none"];
+"src.service.ServiceMLDetector" -> "src.service.Service" [arrowhead="empty", arrowtail="none"];
+"src.service.ServiceScraper" -> "src.service.Service" [arrowhead="empty", arrowtail="none"];
+"src.service.ServiceSoundDetector" -> "src.service.ServiceMLDetector" [arrowhead="empty", arrowtail="none"];
+"src.utils.UtilsScraper" -> "src.utils.Utils" [arrowhead="empty", arrowtail="none"];
+}
