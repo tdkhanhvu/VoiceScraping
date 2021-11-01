@@ -112,8 +112,9 @@ class AudioSoundDetector(Audio):
 
             self.has_speech = len(speech_timestamps) > 0
             print("Detected Audio:", self.audio_path)
-        except RuntimeError:
+        except RuntimeError as e:
             print("Error detecting audio:", self.audio_path)
+            print(e)
 
     
     def print(self) -> None:
@@ -161,9 +162,9 @@ class AudioLanguageDetector(Audio):
 
             self.language = language
             print(f"Detected Language:{self.language} for audio {self.audio_path}")
-        except RuntimeError:
+        except RuntimeError as e:
             print("Error detecting language:", self.audio_path)
-
+            print(e)
     
     def print(self) -> None:
         """Print this audio item"""
