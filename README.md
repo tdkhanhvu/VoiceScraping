@@ -46,6 +46,24 @@ Please use this command to build this Docker image
 docker build --no-cache -t tdkhanhvu/voice-scraping .
 ```
 
+## Run Docker image
+
+I am having a problem if running the Docker image in Windows, which is my development environment. The usual mounting command from Docker does not work and my Windows mount cannot access the files from the container even though it can use the packages installed there. Hence, below is the workaround for that:
+
+```bash
+# clone this project to that folder
+git clone https://github.com/tdkhanhvu/VoiceScraping.git
+```
+
+Open the `src/start.sh` file and Replace All **\r** with an empty string. Windows will try to add a special character **\r** next to the new line **\n**, causing the bash script to fail
+
+```bash
+# run the docker image
+docker run -it -v "d:/github/temp/VoiceScraping":/home/app tdkhanhvu/voice-scraping /bin/bash
+```
+
+Replace the Windows path with your path to the cloned repository.
+
 ## How to introduce a new model into this project
 
 Assume that you want to introduce a new model called [NumberDetector](https://pytorch.org/hub/snakers4_silero-vad_number/), you need to create these 3 new classes:
