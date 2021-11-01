@@ -7,7 +7,6 @@ charset="utf-8"
 "src.main" [color="black", label="src.main", shape="box", style="solid"];
 "src.metadatamanager" [color="black", label="src.metadatamanager", shape="box", style="solid"];
 "src.service" [color="black", label="src.service", shape="box", style="solid"];
-"src.test" [color="black", label="src.test", shape="box", style="solid"];
 "src.utils" [color="black", label="src.utils", shape="box", style="solid"];
 "src.audio" -> "src.utils" [arrowhead="open", arrowtail="none"];
 "src.main" -> "src.service" [arrowhead="open", arrowtail="none"];
