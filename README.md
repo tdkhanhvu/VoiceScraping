@@ -53,6 +53,7 @@ I am having a problem if running the Docker image in Windows, which is my develo
 ```bash
 # clone this project to that folder
 git clone https://github.com/tdkhanhvu/VoiceScraping.git
+cd VoiceScraping
 ```
 
 Open the `src/start.sh` file and Replace All **\r** with an empty string. Windows will try to add a special character **\r** next to the new line **\n**, causing the bash script to fail
