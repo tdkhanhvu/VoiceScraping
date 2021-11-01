@@ -30,5 +30,7 @@ WORKDIR $PROJECT_DIR
 ENV ENV_PREFIX VoiceScraping
 RUN conda env create --file $PROJECT_DIR/env.yml && \
 	conda env update --file $PROJECT_DIR/env_os_additional.yml
-
+	
 RUN conda activate $ENV_PREFIX
+
+ENTRYPOINT ["scripts/start.sh"]

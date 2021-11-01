@@ -43,8 +43,7 @@ Please go to this [Docker website](https://hub.docker.com/r/tdkhanhvu/voice-scra
 Please use this command to build this Docker image
 
 ```bash
-
-
+docker build --no-cache -t tdkhanhvu/voice-scraping .
 ```
 
 ## How to introduce a new model into this project
